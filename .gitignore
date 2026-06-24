@@ -1,0 +1,18 @@
+# Eclipse
+.project
+.cproject
+.settings/
+
+# Build folders
+Debug/
+Release/
+
+# Compiled files
+*.exe
+*.o
+*.obj
+*.out
+
+# OS files
+.DS_Store
+Thumbs.db
