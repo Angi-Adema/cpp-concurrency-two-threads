@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdexcept>
 #include <condition_variable>
 #include <mutex>
 #include <thread>
@@ -19,29 +18,30 @@ bool incrementDone = false;
 // shared resources
 condition_variable cv;
 
-// Create a method to handle incrementing the counter to 20
+// Create a method used to increment the shared counter variable
 void incrementCounter() {
 	// Print statement indicating the results of the increment
 	cout << "Result of incrementing the counter:" << endl;
 
 	// Use a for loop to increment the counter to 20
-	for (int i = 1; i < 21; i++) {
+	for (int i = 0; i <= 20; i++) {
 
 		// Use lock_guard with the mutex to acquire the lock on the shared resource
 		// and automatically release the lock
 		lock_guard<mutex> lock(mtx);
 
-		// Increment the counter by 1 each loop cycle
-		counter++;
-
 		// Print statement showing the result of counter each iteration
 		cout << counter << " ";
 
-		// End on a new line
+		// Conditional to check if the counter has reached 20 and if so break
+		// putting cursor on a new line
 		if (counter == 20) {
 			cout << endl;
+			break;
 		}
 
+		// Increment counter
+		counter++;
 	}
 
 	// Since incrementDone is a shared variable, we must create a new lock to update its state
@@ -80,7 +80,7 @@ void decrementCounter() {
 		cout << "\nResult of decrementing the counter:" << endl;
 
 		// Use a for loop to decrement the counter variable
-		for (int i = 20; i > 0; i--) {
+		for (int i = 20; i >= 0; i--) {
 
 			// Lock the shared resources using lock_guard to automatically release the lock
 			lock_guard<mutex> lock(mtx);
@@ -89,15 +89,16 @@ void decrementCounter() {
 			cout << counter << " ";
 
 			// Decrement the counter each iteration
-			counter--;
-
+			if (counter > 0) {
+				counter--;
+			}
 	}
 }
 
 // Program begins with the main method creating the first thread
 int main() {
 
-	// Create two additional threads that begin executing one right after the other
+	// Create two threads that execute concurrently, thread 2 waiting until thread 1 completes
 	thread t1(incrementCounter);
 	thread t2(decrementCounter);
 
